@@ -1,13 +1,16 @@
 [package]
-name = "subtle"
+name = "subtle-ml"
 # Before incrementing:
 # - update CHANGELOG
 # - update html_root_url
 # - update README if necessary by semver
 # - if any updates were made to the README, also update the module documentation in src/lib.rs
-version = "2.4.1"
-authors = ["Isis Lovecruft <isis@patternsinthevoid.net>",
-           "Henry de Valence <hdevalence@hdevalence.ca>"]
+version = "2.5.0"
+authors = [
+    "Isis Lovecruft <isis@patternsinthevoid.net>",
+    "Henry de Valence <hdevalence@hdevalence.ca>",
+    "Michael Lodder <redmike7@gmail.com>"
+]
 readme = "README.md"
 license = "BSD-3-Clause"
 repository = "https://github.com/dalek-cryptography/subtle"
@@ -25,7 +28,7 @@ exclude = [
 travis-ci = { repository = "dalek-cryptography/subtle", branch = "master"}
 
 [dev-dependencies]
-rand = { version = "0.7" }
+rand = { version = "0.8" }
 
 [features]
 default = ["std", "i128"]

@@ -126,6 +126,7 @@ impl Choice {
     }
 }
 
+
 impl From<Choice> for bool {
     /// Convert the `Choice` wrapper into a `bool`, depending on whether
     /// the underlying `u8` was a `0` or a `1`.
@@ -236,6 +237,13 @@ impl From<u8> for Choice {
     }
 }
 
+impl Choice {
+    /// Intended to use in const init situations
+    pub const fn from_u8_unchecked(input: u8) -> Choice {
+        Choice(input)
+    }
+}
+
 /// An `Eq`-like trait that produces a `Choice` instead of a `bool`.
 ///
 /// # Example
@@ -257,7 +265,6 @@ pub trait ConstantTimeEq {
     ///
     /// * `Choice(1u8)` if `self == other`;
     /// * `Choice(0u8)` if `self != other`.
-    #[inline]
     fn ct_eq(&self, other: &Self) -> Choice;
 }
 
@@ -380,7 +387,6 @@ pub trait ConditionallySelectable: Copy {
     /// assert_eq!(z, y);
     /// # }
     /// ```
-    #[inline]
     fn conditional_select(a: &Self, b: &Self, choice: Choice) -> Self;
 
     /// Conditionally assign `other` to `self`, according to `choice`.
@@ -530,7 +536,6 @@ pub trait ConditionallyNegatable {
     /// unchanged.
     ///
     /// This function should execute in constant time.
-    #[inline]
     fn conditional_negate(&mut self, choice: Choice);
 }
 
@@ -584,7 +589,7 @@ impl<T> From<CtOption<T>> for Option<T> {
     /// leakage of the `T` since the `Option<T>` will do it anyways.
     fn from(source: CtOption<T>) -> Option<T> {
         if source.is_some().unwrap_u8() == 1u8 {
-            Option::Some(source.value)
+            Some(source.value)
         } else {
             None
         }
@@ -600,8 +605,21 @@ impl<T> CtOption<T> {
     #[inline]
     pub fn new(value: T, is_some: Choice) -> CtOption<T> {
         CtOption {
-            value: value,
-            is_some: is_some,
+            value,
+            is_some,
+        }
+    }
+
+    /// This method is used to construct a new `CtOption<T>` and takes
+    /// a value of type `T`, and a `Choice` that determines whether
+    /// the optional value should be `Some` or not. If `is_some` is
+    /// false, the value will still be stored but its value is never
+    /// exposed. Intended for const fn situations where value is known
+    #[inline]
+    pub const fn new_unchecked(value: T, is_some: Choice) -> CtOption<T> {
+        Self {
+            value,
+            is_some
         }
     }
 

@@ -2,6 +2,10 @@
 
 Entries are listed in reverse chronological order.
 
+## 2.5.0
+
+* Add const fn new_unchecked for CtOption and Choice
+
 ## 2.4.1
 
 * Fix a bug in how the README was included in the documentation builds
